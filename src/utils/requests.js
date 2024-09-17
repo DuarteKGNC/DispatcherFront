@@ -1,8 +1,14 @@
 import axios from "axios"
 
 export async function getUser(){
-    const response = await axios.get("http://localhost:8000/get.UserIDS");
-    return response;
+    try{
+        const response = await axios.get("http://localhost:8000/get.UserIDS");
+        return response;
+    }catch{
+        setTimeout(()=>{
+            getUser();
+        }, 10000);
+    }
 }
 
 export async function createNewTicket(ticket){

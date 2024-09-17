@@ -3,11 +3,26 @@
     <div class="dispatch">
       <div class="title">
         <h1>Ticket Dispatcher</h1>
+        <input type="file" id="selectFiles"/>
+        <button class="mt-2 btn btn-primary ps-5 pe-5" id="import" @click="importTicket">Import Ticket</button>
       </div>
       <div class="form-group mt-4">
         <hr>
         <div class="row">
           <h3 class="mb-4">Ticket Information</h3>
+          <VueCsvImport
+      :is-loading="false"
+      :fields="fields"
+      @data="importTicket"
+    />
+    <table>
+        <tr>
+          <th v-for="field in fields" :key="field">{{ field }}</th>
+        </tr>
+        <tr v-for="(row, index) in csvData" :key="index">
+          <td v-for="field in fields" :key="field">{{ row[field] }}</td>
+        </tr>
+      </table>
           <div class="col-md-8">
             <input id="ticket_id" type="text" class="input-form me-5" placeholder="Ticket ID: #000000000" v-model="ticket.ticket_id">
             <input id="ticket_link" type="text" class="input-form w-50" placeholder="Ticket Link" v-model="ticket.ticket_link">
@@ -73,11 +88,18 @@
 
 <script>
 import {getUser, createNewTicket} from "./utils/requests.js";
+//import { importTicketJSON } from "./utils/import.js";
+import {VueCsvImport} from 'vue-csv-import';
 export default {
   name: 'App',
+  components: {
+    VueCsvImport
+  },
   data(){
     return {
       inputs: 2,
+      fields: [],  // This will hold the CSV headers
+      csvData: [] ,
       add_dinfo: false,
       users: "",
       ticket: {
@@ -101,12 +123,23 @@ export default {
     },
     removeStep(index){
       this.ticket.steps_to_rep.splice(index, 1);
+    },
+    importTicket(data){
+      if (data.length > 0) {
+        this.fields = Object.keys(data[0]);
+        this.csvData = data;
+      }
     }
   },
   mounted(){
     getUser()
       .then(data =>{
-        this.users = data.data;
+        if(data){
+          this.users = data.data;
+        }else{
+          this.users = "";
+        }
+        
       });
   }
 }
