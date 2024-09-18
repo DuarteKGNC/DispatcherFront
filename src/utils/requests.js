@@ -6,7 +6,7 @@ export async function getUser(){
         return response;
     }catch{
         setTimeout(()=>{
-            getUser();
+            console.log("Couldn't get users")
         }, 10000);
     }
 }

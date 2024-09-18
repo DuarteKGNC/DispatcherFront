@@ -1,18 +1,19 @@
-export function importTicketJSON(ticket){
-    document.getElementById('import').onclick = () => {
-        const files = document.getElementById('selectFiles').files;
-        if (files.length <= 0) {
-          return false;
-        }
-      
-        const fr = new FileReader();
-      
-        fr.onload = e => {
-          const result = JSON.parse(e.target.result);
-          const formatted = JSON.stringify(result, null, 2);
-          console.log(formatted);
-        }
-        fr.readAsText(files.item(0));
-      };
-      console.log(ticket)
+import axios from "axios";
+export async function importTicketJSON(ticket){
+
+  const formData = new FormData();
+  formData.append('file', ticket);
+
+  try {
+    const response = await axios.post("http://localhost:8000/post.ImportTicket", formData, {headers: {'Content-Type': 'multipart/form-data'}});
+    if (response.status === 200) {
+      alert('File successfully uploaded!');
+    } else {
+      alert('Error uploading file');
+    }
+
+  }catch(error){
+    alert("Error uplading the file");
+  }
 }
+    
