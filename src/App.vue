@@ -114,7 +114,15 @@ export default {
         alert("You need to upload a file first.");
         return;
       }else{
-        importTicketJSON(this.selectedFile);
+        //this.ticket.ticket_id, this.ticket.ticket_title, this.ticket.description, this.ticket.debug_info = importTicketJSON(this.selectedFile);
+        importTicketJSON(this.selectedFile)
+        .then((response) => {
+          this.add_dinfo = true;
+          this.ticket.ticket_id = response[0];
+          this.ticket.title = response[1];
+          this.ticket.description = response[2];
+          this.ticket.debug_info = response[3];
+        })
       }
     }
   },
