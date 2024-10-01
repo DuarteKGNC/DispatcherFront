@@ -65,7 +65,8 @@
         </div>
         <div class="row">
           <div class="col-md-12 mt-4 mb-5">
-            <button class="btn btn-primary w-50" @click="createTicket">Submit</button>
+            <input type="file" @change="handleMedia">
+            <button class="btn btn-primary w-25" @click="createTicket">Submit</button>
           </div>
         </div>
       </div>
@@ -84,15 +85,17 @@ export default {
       add_dinfo: false,
       users: "",
       selectedFile: false,
+      ts: undefined,
       ticket: {
         ticket_id: "",
         ticket_link: "",
         title: "",
         description: "",
+        debug_info: "",
         goalkeeper: "Goalkeeper",
         severity: 'Severity',
         steps_to_rep: [],
-        debug_info: ""
+        media: new FormData()
       }
     }
   },
@@ -101,7 +104,11 @@ export default {
       this.ticket.steps_to_rep.push('');
     },
     createTicket(){
-      createNewTicket(this.ticket);
+      createNewTicket(this.ticket)
+      .then(response => {
+        this.ts = response.data.ts;
+      });
+      this.uploadMedia();
     },
     removeStep(index){
       this.ticket.steps_to_rep.splice(index, 1);
@@ -109,12 +116,17 @@ export default {
     handleCSVInput(e){
       this.selectedFile = e.target.files[0];
     },
+    handleMedia(e){
+      this.ticket.media.append("image", e.target.files[0]);
+    },
+    uploadMedia(){
+      this.ts ? console.log(this.ts) : console.log(0);
+    },
     uploadCSV(){
       if(!this.selectedFile){
         alert("You need to upload a file first.");
         return;
       }else{
-        //this.ticket.ticket_id, this.ticket.ticket_title, this.ticket.description, this.ticket.debug_info = importTicketJSON(this.selectedFile);
         importTicketJSON(this.selectedFile)
         .then((response) => {
           this.add_dinfo = true;

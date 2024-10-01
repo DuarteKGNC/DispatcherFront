@@ -1,8 +1,9 @@
-import axios from "axios"
+import axios from "axios";
+const LOCALHOST = "http://localhost:8000/";
 
 export async function getUser(){
     try{
-        const response = await axios.get("http://localhost:8000/get.UserIDS");
+        const response = await axios.get(LOCALHOST+"/get.UserIDS");
         return response;
     }catch{
         setTimeout(()=>{
@@ -12,17 +13,16 @@ export async function getUser(){
 }
 
 export async function createNewTicket(ticket){
-
     const headers = {
         'Content-Type': 'application/json'
     }
-
     let json_ticket = {
         "author_name":{
             "ticket_id":"#"+ticket.ticket_id,
             "priority":ticket.severity
         },
         "ticket_link":ticket.ticket_link,
+        "media": ticket.media,
         "fields":{
             "title":ticket.title,
             "goalkeeper":ticket.goalkeeper,
@@ -32,6 +32,12 @@ export async function createNewTicket(ticket){
         }
     }
 
-    const response = await axios.post("http://localhost:8000/post.NewTicket", json_ticket, {headers: headers});
+    const response = await axios.post(LOCALHOST+"post.NewTicket", json_ticket, {headers: headers});
     return response;
 }
+
+
+export async function uploadMediaData(media){
+    const response = await axios.post(LOCALHOST, {"media": media});
+    return response;
+}   
