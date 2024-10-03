@@ -107,8 +107,8 @@ export default {
       createNewTicket(this.ticket)
       .then(response => {
         this.ts = response.data.ts;
+        this.uploadMedia();
       });
-      this.uploadMedia();
     },
     removeStep(index){
       this.ticket.steps_to_rep.splice(index, 1);
@@ -120,7 +120,7 @@ export default {
       this.ticket.media.append("image", e.target.files[0]);
     },
     uploadMedia(){
-      this.ts ? console.log(this.ts) : console.log(0);
+      this.ts ? console.log(this.ts) : console.log(0); // Still needs work
     },
     uploadCSV(){
       if(!this.selectedFile){
